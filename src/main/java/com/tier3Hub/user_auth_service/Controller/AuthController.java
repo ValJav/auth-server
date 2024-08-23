@@ -8,6 +8,7 @@ import com.tier3Hub.user_auth_service.security.JWTUtil;
 import com.tier3Hub.user_auth_service.service.AuthService;
 import com.tier3Hub.user_auth_service.service.UserInfoConfigManager;
 import com.tier3Hub.user_auth_service.utils.ResponseHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,12 +38,12 @@ public class AuthController {
     private UserInfoConfigManager userInfoConfigManager;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(RegisterDTO registerDTO) {
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO) {
         return ResponseHandler.generateResponse("User registered successfully", HttpStatus.OK, authService.register(registerDTO));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(LoginDTO loginDTO) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginDTO) {
         try {
             Authentication authenticate = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));

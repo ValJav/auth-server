@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/test")
 public class TestController {
 
-    //access by the user and admin
+    //access by all
     @GetMapping("/public/hello")
     public String hello()
     {
         return "Hello";
     }
 
-    //access by the admin
+    //access by authenticated
     @GetMapping("/private/hello")
     public String helloPrivate()
     {

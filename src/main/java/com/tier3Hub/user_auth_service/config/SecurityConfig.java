@@ -1,8 +1,5 @@
 package com.tier3Hub.user_auth_service.config;
 
-import com.tier3Hub.user_auth_service.security.JWTFilter;
-import com.tier3Hub.user_auth_service.service.UserInfoConfigManager;
-import com.tier3Hub.user_auth_service.utils.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.tier3Hub.user_auth_service.security.JWTFilter;
+import com.tier3Hub.user_auth_service.service.UserInfoConfigManager;
+import com.tier3Hub.user_auth_service.utils.AppConstants;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -30,8 +31,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(request -> request
                         .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
-                        .requestMatchers("/api/test/public/hello/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/api/test/private/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)

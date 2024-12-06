@@ -21,8 +21,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private String email;
-    private String phoneNumber;
     private List<String> roles;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.inserm.user_auth_service.security.JWTUtil;
-
 class JWTUtilTest {
     private JWTUtil jwtUtil;
     private static final String TEST_USERNAME = "testuser";

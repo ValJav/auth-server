@@ -1,6 +1,7 @@
 package com.inserm.user_auth_service.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +49,9 @@ class AuthControllerTest {
 
     @Test
     void register_ShouldReturnSuccess() throws Exception {
-        RegisterDTO registerDTO = new RegisterDTO("testuser", "password123", "USER");
+        List<String> authorities = new ArrayList<>();
+        authorities.add("ROLE_USER");
+        RegisterDTO registerDTO = new RegisterDTO("testuser", "password123", authorities);
         RegisterResponse response = new RegisterResponse();
         response.setUsername("testuser");
 

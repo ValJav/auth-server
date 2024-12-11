@@ -1,5 +1,8 @@
 package com.inserm.user_auth_service.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +14,10 @@ import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
-import com.inserm.user_auth_service.repository.AuthRepository;
 import com.inserm.user_auth_service.dto.RegisterDTO;
 import com.inserm.user_auth_service.dto.RegisterResponse;
 import com.inserm.user_auth_service.entity.User;
+import com.inserm.user_auth_service.repository.AuthRepository;
 
 class AuthServiceImplTest {
 
@@ -35,7 +38,9 @@ class AuthServiceImplTest {
     @Test
     void register_ShouldReturnRegisteredUser() {
         // Arrange
-        RegisterDTO registerDTO = new RegisterDTO("testuser", "password123", "USER");
+        List<String> authorities = new ArrayList<>();
+        authorities.add("ROLE_USER");
+        RegisterDTO registerDTO = new RegisterDTO("testuser", "password123", authorities);
         User user = new User();
         user.setUsername("testuser");
         

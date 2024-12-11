@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.inserm.user_auth_service.Repository.AuthRepository;
+import com.inserm.user_auth_service.repository.AuthRepository;
 import com.inserm.user_auth_service.entity.User;
 
 @Service

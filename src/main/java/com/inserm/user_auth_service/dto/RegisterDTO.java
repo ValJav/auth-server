@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,5 +20,5 @@ public class RegisterDTO {
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
-    private String role;
+    private List<String> roles;
 }

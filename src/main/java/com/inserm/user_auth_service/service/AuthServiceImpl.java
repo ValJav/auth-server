@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.inserm.user_auth_service.Repository.AuthRepository;
+import com.inserm.user_auth_service.repository.AuthRepository;
 import com.inserm.user_auth_service.dto.RegisterDTO;
 import com.inserm.user_auth_service.dto.RegisterResponse;
 import com.inserm.user_auth_service.entity.User;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
         User user = modelMapper.map(registerDTO, User.class);
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
-        user.setRoles(Arrays.asList("USER", "ADMIN", "TESTER"));
+        user.setRoles(registerDTO.getRoles());
         User save = authRepository.save(user);
         return modelMapper.map(save, RegisterResponse.class);
     }

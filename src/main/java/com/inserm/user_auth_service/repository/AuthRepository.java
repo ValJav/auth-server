@@ -1,4 +1,4 @@
-package com.inserm.user_auth_service.Repository;
+package com.inserm.user_auth_service.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

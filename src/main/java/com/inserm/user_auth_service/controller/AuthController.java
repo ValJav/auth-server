@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,9 @@ import com.inserm.user_auth_service.utils.ResponseHandler;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -66,16 +70,25 @@ public class AuthController {
 
     @PostMapping("/validate")
     public ResponseEntity<Object> validate(@RequestHeader("Authorization") String token) {
+
+        List<SimpleGrantedAuthority> anonymousRoles = new ArrayList<>();
+        anonymousRoles.add(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+
         try {
-            if (token == null || !token.startsWith("Bearer ")) {
-                throw new AuthException("Invalid token format");
+            if (token == null) {
+                return ResponseHandler.generateResponse("Empty token : auth as Anonymous", HttpStatus.OK, anonymousRoles);
+            }
+            if (token != null && !token.startsWith("Bearer ")) {
+                return ResponseHandler.generateResponse("Token doesn't start with Bearer : auth as Anonymous", HttpStatus.OK, anonymousRoles);
             }
 
             String jwt = token.substring(7);
             String username = jwtUtil.extractUsername(jwt);
 
             if (username == null) {
-                throw new AuthException("Invalid token");
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        "", null, anonymousRoles);
+                return ResponseHandler.generateResponse("Could not find user : auth as Anonymous", HttpStatus.OK, anonymousRoles);
             }
 
             UserDetails userDetails = userInfoConfigManager.loadUserByUsername(username);
@@ -84,11 +97,11 @@ public class AuthController {
                     userDetails, null, userDetails.getAuthorities());
                 return ResponseHandler.generateResponse("Token is valid", HttpStatus.OK, userDetails);
             }
-            throw new AuthException("Invalid token");
+            return ResponseHandler.generateResponse("Invalid token : auth as Anonymous", HttpStatus.OK, anonymousRoles);
         } catch (ExpiredJwtException e) {
-            throw new AuthException("Token has expired");
+            return ResponseHandler.generateResponse("Token has expired : auth as Anonymous", HttpStatus.OK, anonymousRoles);
         } catch (SignatureException e) {
-            throw new AuthException("Invalid token signature");
+            return ResponseHandler.generateResponse("Invalid token signature : auth as Anonymous", HttpStatus.OK, anonymousRoles);
         }
     }
 }

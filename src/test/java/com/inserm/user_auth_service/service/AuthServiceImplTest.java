@@ -11,11 +11,10 @@ import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
-import com.inserm.user_auth_service.Repository.AuthRepository;
+import com.inserm.user_auth_service.repository.AuthRepository;
 import com.inserm.user_auth_service.dto.RegisterDTO;
 import com.inserm.user_auth_service.dto.RegisterResponse;
 import com.inserm.user_auth_service.entity.User;
-import com.inserm.user_auth_service.service.AuthServiceImpl;
 
 class AuthServiceImplTest {
 

@@ -21,16 +21,17 @@ import com.inserm.user_auth_service.utils.AppConstants;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private JWTFilter jwtFilter;
+    //@Autowired
+    //private JWTFilter jwtFilter;
 
     @Autowired
     private UserInfoConfigManager userInfoConfigManager;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTFilter jwtFilter) throws Exception {
         return http.authorizeHttpRequests(request -> request
                         .requestMatchers(AppConstants.PUBLIC_URLS).permitAll()
+                        //.requestMatchers("/api/auth/register").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

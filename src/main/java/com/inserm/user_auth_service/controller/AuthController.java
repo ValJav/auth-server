@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +48,12 @@ public class AuthController {
     @Autowired
     private UserInfoConfigManager userInfoConfigManager;
 
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthController(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @PostMapping("/register")
     public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO) {
         return ResponseHandler.generateResponse("User registered successfully", HttpStatus.OK, authService.register(registerDTO));
@@ -54,17 +62,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginDTO) {
         try {
-            Authentication authenticate = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
             UserDetails userDetails = userInfoConfigManager.loadUserByUsername(loginDTO.getUsername());
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
-            LoginResponse loginResponse = LoginResponse
-                    .builder()
-                    .accessToken(jwt)
-                    .build();
-            return ResponseHandler.generateResponse("Service logged in successfully", HttpStatus.OK, loginResponse);
-        } catch (BadCredentialsException e) {
-            throw new AuthException("Invalid username or password");
+            if (passwordEncoder.matches(loginDTO.getPassword(), userDetails.getPassword())) {
+                String token = jwtUtil.generateToken(userDetails.getUsername());
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 
